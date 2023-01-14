@@ -1,0 +1,65 @@
+# 4.10 RHCOS AMI:
+# https://docs.openshift.com/container-platform/4.10/installing/installing_aws/installing-aws-user-infra.html#installation-aws-user-infra-rhcos-ami_installing-aws-user-infra
+
+apiVersion: machine.openshift.io/v1beta1
+kind: MachineSet
+metadata:
+  labels:
+    machine.openshift.io/cluster-api-cluster: ava-65f5t
+  name: ava-65f5t-infra-us-east-2c
+  namespace: openshift-machine-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      machine.openshift.io/cluster-api-cluster: ava-65f5t
+      machine.openshift.io/cluster-api-machineset: ava-65f5t-infra-us-east-2c
+  template:
+    metadata:
+      labels:
+        machine.openshift.io/cluster-api-cluster: ava-65f5t
+        machine.openshift.io/cluster-api-machine-role: infra
+        machine.openshift.io/cluster-api-machine-type: infra
+        machine.openshift.io/cluster-api-machineset: ava-65f5t-infra-us-east-2c
+    spec:
+      metadata:
+        labels:
+          node-role.kubernetes.io/infra: ""
+      taints:
+        - key: node-role.kubernetes.io/infra
+          effect: NoSchedule
+      providerSpec:
+        value:
+          ami:
+            id: ami-09e637fc5885c13cc # us-east-2 rhcos 4.10 ami
+          apiVersion: awsproviderconfig.openshift.io/v1beta1
+          blockDevices:
+            - ebs:
+                iops: 0
+                volumeSize: 120
+                volumeType: gp2
+          credentialsSecret:
+            name: aws-cloud-credentials
+          deviceIndex: 0
+          iamInstanceProfile:
+            id: ava-65f5t-worker-profile
+          instanceType: m6a.8xlarge # mod based on specs need
+          kind: AWSMachineProviderConfig
+          placement:
+            availabilityZone: us-east-2c
+            region: us-east-2
+          securityGroups:
+            - filters:
+                - name: tag:Name
+                  values:
+                    - ava-65f5t-worker-sg
+          subnet:
+            filters:
+              - name: tag:Name
+                values:
+                  - ava-65f5t-private-us-east-2c
+          tags:
+            - name: kubernetes.io/cluster/ava-65f5t
+              value: owned
+          userDataSecret:
+            name: worker-user-data

@@ -4,6 +4,8 @@
 apiVersion: machine.openshift.io/v1beta1
 kind: MachineSet
 metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-50" # create infra machinesets first (lowest value)
   labels:
     machine.openshift.io/cluster-api-cluster: ava-65f5t
   name: ava-65f5t-infra-us-east-2a

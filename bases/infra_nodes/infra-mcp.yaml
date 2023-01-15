@@ -1,6 +1,8 @@
 apiVersion: machineconfiguration.openshift.io/v1
 kind: MachineConfigPool
 metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-49" # Create infra mcp right after machinesets
   name: infra
 spec:
   machineConfigSelector:

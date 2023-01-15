@@ -1,6 +1,8 @@
 apiVersion: operator.openshift.io/v1
 kind: IngressController
 metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-25"
   name: default
   namespace: openshift-ingress-operator
 spec:

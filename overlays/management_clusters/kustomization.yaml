@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+bases:
+# Add all_clusters overlay so they're applied to all management clusters
+- ../all_clusters/
+
+
+# Add any additional bases (with kustomization.yaml) to be applied
+- ../../bases/cluster_logging/ # add cluster logging
+
+commonAnnotations:
+  environment: management
